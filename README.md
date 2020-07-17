@@ -1,68 +1,72 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# @storybook/cli
 
-## Available Scripts
+```jsx
+npx -p @storybook/cli sb init --type react
+```
 
-In the project directory, you can run:
+```jsx
+npm run storybook
+```
 
-### `yarn start`
+[https://storybook.js.org/addons/](https://storybook.js.org/addons/)
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+를 참고하여 플러그인을 추가셋팅 해주면된다.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+주의할점: 버전문제가 있을 수 있기때문에 yarn으로 설치한다.(현시점 나는 core-js 문제가 있었다.)
 
-### `yarn test`
+예시로 jsx를 셋팅해보자
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+아래는 [https://github.com/storybookjs/addon-jsx](https://github.com/storybookjs/addon-jsx)에 나와있는 코드이다.
 
-### `yarn build`
+```jsx
+// .storybook/main.js:
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+module.exports = {
+    addons: ["storybook-addon-jsx"],
+};
+```
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+아래에 추가한다.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```jsx
+module.exports = {
+    stories: ["../stories/**/*.stories.js"],
+    addons: [
+        "@storybook/addon-actions",
+        "@storybook/addon-links",
+        "storybook-addon-jsx",
+    ],
+};
+```
 
-### `yarn eject`
+아래 코드에서보면, 경로가 TestComponent로 되어있기때문에 경로를 맞춰줘야 한다.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```jsx
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import { jsxDecorator } from "storybook-addon-jsx";
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+//import { TestComponent } from './TestComponent': //기존코드
+import TestComponent from "../src/TestComponent";
+export default {
+    title: "Components/TestComponent",
+    decorators: [jsxDecorator],
+};
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+export const Paris = () => (
+    <TestComponent
+        fontSize={45}
+        fontFamily="Roboto"
+        align="center"
+        color="#CAF200"
+    >
+        Hello
+    </TestComponent>
+);
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+export const Orleans = () => <Test color="#236544">Hello</Test>;
+```
 
-## Learn More
+src 경로에 TestComponent.js를 만들어준다.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+주의할점: 셋팅이 바뀔시 인식 못하는 경우가있기때문에 npm run storybook으로 재시작해 주어야한다.
